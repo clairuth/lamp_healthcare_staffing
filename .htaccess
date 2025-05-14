@@ -1,0 +1,37 @@
+# .htaccess for LAMP Healthcare Staffing Platform (in public directory)
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} . 
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Block access to .env, .git, etc.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<FilesMatch "^\.(env|git|svn|hg|bzr|DS_Store)">
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Disable directory browsing
+Options -Indexes
+
+# Set PHP error logging (optional, can also be set in php.ini or config.php)
+# php_flag display_errors Off
+# php_flag log_errors On
+# php_value error_log ../logs/php_errors.log
